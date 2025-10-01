@@ -1,0 +1,228 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-section py-5">
+    <div class="row align-items-center min-vh-75">
+        <div class="col-md-6">
+            <h1 class="display-4 mb-4 fw-bold">Your Safety, Our Priority</h1>
+            <p class="lead mb-4">A quick and effective way to seek help during emergencies. With just one tap, alert your trusted contacts and authorities.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg px-4 me-md-2">
+                    <i class="fas fa-user-plus"></i> Get Started
+                </a>
+                <a href="#features" class="btn btn-outline-primary btn-lg px-4">
+                    <i class="fas fa-info-circle"></i> Learn More
+                </a>
+            </div>
+        </div>
+        <div class="col-md-6 text-center">
+            <img src="https://m.media-amazon.com/images/I/61XNjoJqrPL.png" alt="Safety Illustration" class="img-fluid rounded shadow">
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="py-5">
+    <h2 class="section-title">Key Features</h2>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 class="card-title">Emergency SOS</h3>
+                <p class="card-text">One-tap emergency alert system to notify your trusted contacts and authorities instantly.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-map-marker-alt"></i>
+                </div>
+                <h3 class="card-title">Real-time Location</h3>
+                <p class="card-text">Share your location instantly with emergency contacts during critical situations.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3 class="card-title">Trusted Contacts</h3>
+                <p class="card-text">Manage your emergency contacts and keep them updated with your safety status.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="card-title">Safety Zones</h3>
+                <p class="card-text">Create and manage safe zones for your regular routes and important locations.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+                <h3 class="card-title">Emergency History</h3>
+                <p class="card-text">Track and review your emergency alerts and safety incidents.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100 text-center p-4">
+                <div class="feature-icon">
+                    <i class="fas fa-lightbulb"></i>
+                </div>
+                <h3 class="card-title">Safety Tips</h3>
+                <p class="card-text">Access important safety guidelines and emergency preparedness tips.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <div class="timeline">
+                    <div class="timeline-item mb-4">
+                        <div class="timeline-number">1</div>
+                        <h4>Register & Set Up</h4>
+                        <p>Create your account and add your emergency contacts.</p>
+                    </div>
+                    <div class="timeline-item mb-4">
+                        <div class="timeline-number">2</div>
+                        <h4>Enable Location</h4>
+                        <p>Allow location services for real-time tracking.</p>
+                    </div>
+                    <div class="timeline-item mb-4">
+                        <div class="timeline-number">3</div>
+                        <h4>Create Safety Zones</h4>
+                        <p>Set up safe zones for your regular routes.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-number">4</div>
+                        <h4>Use SOS When Needed</h4>
+                        <p>One tap to alert your contacts in emergencies.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 text-center">
+                <button class="sos-button" enabled>
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <span>SOS</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Safety Tips Section -->
+<section class="py-5">
+    <div class="container">
+        <h2 class="section-title">Safety Tips</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-map-marked-alt text-primary me-2"></i>
+                            Plan Your Route
+                        </h5>
+                        <p class="card-text">Always plan your route in advance and stick to well-lit, populated areas.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-mobile-alt text-primary me-2"></i>
+                            Stay Connected
+                        </h5>
+                        <p class="card-text">Keep your phone charged and easily accessible at all times.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-user-shield text-primary me-2"></i>
+                            Trust Your Instincts
+                        </h5>
+                        <p class="card-text">Be aware of your surroundings and trust your instincts if something feels wrong.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<section class="py-5 bg-primary text-white">
+    <div class="container text-center">
+        <h2 class="mb-4">Ready to Make Your Safety a Priority?</h2>
+        <p class="lead mb-4">Join thousands of women who have made their safety a priority.</p>
+        <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+            <i class="fas fa-user-plus"></i> Create Your Account
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    .timeline {
+        position: relative;
+        padding-left: 3rem;
+    }
+    
+    .timeline-item {
+        position: relative;
+        padding-bottom: 1.5rem;
+    }
+    
+    .timeline-number {
+        position: absolute;
+        left: -3rem;
+        width: 2rem;
+        height: 2rem;
+        background-color: var(--primary-color);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+    }
+    
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -2.4rem;
+        top: 2rem;
+        bottom: 0;
+        width: 2px;
+        background-color: var(--primary-color);
+    }
+    
+    .timeline-item:last-child::before {
+        display: none;
+    }
+    
+    .hero-section {
+        background: linear-gradient(135deg, var(--light-color) 0%, var(--accent-color) 100%);
+        border-radius: 20px;
+        margin: 2rem 0;
+        padding: 3rem;
+    }
+</style>
+{% endblock %} 

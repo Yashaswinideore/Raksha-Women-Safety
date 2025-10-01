@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Emergency Services{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="text-center mb-4">Emergency Services</h1>
+            <p class="text-center lead">Quick access to emergency contact numbers. Tap a number to call directly.</p>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="row mb-4">
+        <div class="col-md-6 offset-md-3">
+            <div class="input-group">
+                <span class="input-group-text bg-light">
+                    <i class="fas fa-search"></i>
+                </span>
+                <input type="text" class="form-control" id="searchServices" placeholder="Search emergency services...">
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Filter
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item filter-option" href="#" data-filter="all">All Services</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item filter-option" href="#" data-filter="police">Police</a></li>
+                    <li><a class="dropdown-item filter-option" href="#" data-filter="medical">Medical</a></li>
+                    <li><a class="dropdown-item filter-option" href="#" data-filter="fire">Fire</a></li>
+                    <li><a class="dropdown-item filter-option" href="#" data-filter="women">Women Safety</a></li>
+                    <li><a class="dropdown-item filter-option" href="#" data-filter="disaster">Disaster Management</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Current category indicator -->
+    <div class="row mb-3">
+        <div class="col-12">
+            <h3 id="currentCategory" class="text-center">All Emergency Services</h3>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="servicesContainer">
+        {% for service in services %}
+        <div class="col service-card" data-category="{{ service.category|default('general') }}" data-name="{{ service.name|lower }}">
+            <div class="card h-100 shadow-sm border-0 hover-effect">
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="p-3 rounded-circle me-3" style="background-color: {{ service.color }}">
+                            <i class="{{ service.icon }} text-white fa-lg"></i>
+                        </div>
+                        <h5 class="card-title mb-0">{{ service.name }}</h5>
+                    </div>
+                    <p class="card-text text-muted">{{ service.description }}</p>
+                    <div class="d-grid gap-2">
+                        <a href="tel:{{ service.number }}" class="btn btn-lg btn-outline-primary d-flex justify-content-between align-items-center call-button">
+                            <span class="fs-4">{{ service.number }}</span>
+                            <i class="fas fa-phone-alt"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- No results message -->
+    <div id="noResults" class="row mt-4 d-none">
+        <div class="col-12 text-center">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle me-2"></i>No emergency services found matching your search.
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="alert alert-info shadow-sm" role="alert">
+                <h4 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Important Information</h4>
+                <p>These emergency numbers are accessible even when your phone has no balance or network coverage. In case of emergency, you can also use the SOS feature in the app to alert your emergency contacts with your current location.</p>
+                <hr>
+                <p class="mb-0">Remember, making false emergency calls is a punishable offense.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hover-effect {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .hover-effect:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+    .call-button {
+        transition: all 0.3s ease;
+    }
+    .call-button:hover {
+        background-color: #0d6efd;
+        color: white;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchServices');
+    const serviceCards = document.querySelectorAll('.service-card');
+    const noResults = document.getElementById('noResults');
+    const currentCategoryElement = document.getElementById('currentCategory');
+    const filterOptions = document.querySelectorAll('.filter-option');
+    
+    // Search functionality
+    searchInput.addEventListener('input', filterServices);
+    
+    // Filter functionality
+    filterOptions.forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            const filterValue = this.getAttribute('data-filter');
+            
+            // Update category title
+            if (filterValue === 'all') {
+                currentCategoryElement.textContent = 'All Emergency Services';
+            } else {
+                currentCategoryElement.textContent = this.textContent + ' Services';
+            }
+            
+            filterServices();
+        });
+    });
+    
+    function filterServices() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeFilter = document.querySelector('.filter-option.active');
+        const filterCategory = activeFilter ? activeFilter.getAttribute('data-filter') : 'all';
+        
+        let visibleCount = 0;
+        
+        serviceCards.forEach(card => {
+            const serviceName = card.getAttribute('data-name');
+            const serviceCategory = card.getAttribute('data-category');
+            
+            const matchesSearch = serviceName.includes(searchTerm);
+            const matchesFilter = filterCategory === 'all' || serviceCategory === filterCategory;
+            
+            if (matchesSearch && matchesFilter) {
+                card.classList.remove('d-none');
+                visibleCount++;
+            } else {
+                card.classList.add('d-none');
+            }
+        });
+        
+        // Show/hide no results message
+        if (visibleCount === 0) {
+            noResults.classList.remove('d-none');
+        } else {
+            noResults.classList.add('d-none');
+        }
+    }
+    
+    // Handle filter selections
+    filterOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            filterOptions.forEach(opt => opt.classList.remove('active'));
+            this.classList.add('active');
+            filterServices();
+        });
+    });
+});
+</script>
+{% endblock %} 

@@ -1,0 +1,261 @@
+{% extends "base.html" %}
+
+{% block title %}Emergency History{% endblock %}
+
+{% block head %}
+<style>
+    .emergency-item {
+        border-left: 4px solid #dc3545;
+        padding-left: 15px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease;
+    }
+    
+    .emergency-item:hover {
+        transform: translateY(-5px);
+    }
+    
+    .emergency-item.resolved {
+        border-left-color: #28a745;
+    }
+    
+    .emergency-date {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+    
+    .emergency-location {
+        font-weight: bold;
+        margin: 5px 0;
+    }
+    
+    .map-container {
+        height: 200px;
+        margin: 10px 0;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    
+    .emergency-details {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 10px;
+    }
+    
+    .badge {
+        font-size: 0.8rem;
+    }
+    
+    .navigation-links {
+        margin-top: 15px;
+    }
+    
+    .navigation-links a {
+        display: block;
+        margin-bottom: 8px;
+        padding: 8px 12px;
+        border-radius: 6px;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 500;
+    }
+    
+    .view-location {
+        background-color: #0d6efd;
+    }
+    
+    .get-directions {
+        background-color: #198754;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Emergency History</h2>
+        <a href="{{ url_for('dashboard') }}" class="btn btn-primary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Your Emergency Records</h5>
+        </div>
+        <div class="card-body">
+            {% if history %}
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date & Time</th>
+                                <th>Location</th>
+                                <th>Status</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for emergency in history %}
+                                <tr>
+                                    <td>{{ emergency.timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
+                                    <td>{{ emergency.location_name }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ 'success' if emergency.status == 'resolved' else 'danger' }}">
+                                            {{ emergency.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ emergency.description or 'No description' }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#viewModal{{ emergency.id }}">
+                                            <i class="fas fa-eye"></i> View
+                                        </button>
+                                        
+                                        {% if emergency.status != 'resolved' %}
+                                            <form method="POST" action="{{ url_for('update_emergency_status', emergency_id=emergency.id) }}" class="d-inline">
+                                                <input type="hidden" name="status" value="resolved">
+                                                <button type="submit" class="btn btn-sm btn-success">
+                                                    <i class="fas fa-check"></i> Mark Resolved
+                                                </button>
+                                            </form>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                
+                                <!-- Modal for emergency details -->
+                                <div class="modal fade" id="viewModal{{ emergency.id }}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Emergency Details</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <h6>Date & Time:</h6>
+                                                        <p>{{ emergency.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+                                                        
+                                                        <h6>Status:</h6>
+                                                        <p>
+                                                            <span class="badge bg-{{ 'success' if emergency.status == 'resolved' else 'danger' }}">
+                                                                {{ emergency.status }}
+                                                            </span>
+                                                        </p>
+                                                        
+                                                        <h6>Location:</h6>
+                                                        <p>{{ emergency.location_name }}</p>
+                                                        
+                                                        <h6>Coordinates:</h6>
+                                                        <p>{{ emergency.latitude }}, {{ emergency.longitude }}</p>
+                                                        
+                                                        <h6>Description:</h6>
+                                                        <p>{{ emergency.description or 'No description provided' }}</p>
+                                                        
+                                                        <div class="navigation-links">
+                                                            <a href="https://www.google.com/maps?q={{ emergency.latitude }},{{ emergency.longitude }}" target="_blank" class="view-location">
+                                                                <i class="fas fa-map-marker-alt"></i> View on Google Maps
+                                                            </a>
+                                                            <a href="https://www.google.com/maps/dir/?api=1&destination={{ emergency.latitude }},{{ emergency.longitude }}" target="_blank" class="get-directions">
+                                                                <i class="fas fa-directions"></i> Get Directions
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="map-container" id="map{{ emergency.id }}"></div>
+                                                        <script>
+                                                            // Initialize map for this emergency
+                                                            function initMap{{ emergency.id }}() {
+                                                                const map = new google.maps.Map(document.getElementById('map{{ emergency.id }}'), {
+                                                                    zoom: 15,
+                                                                    center: { lat: {{ emergency.latitude }}, lng: {{ emergency.longitude }} }
+                                                                });
+                                                                
+                                                                // Add marker for emergency location
+                                                                new google.maps.Marker({
+                                                                    position: { lat: {{ emergency.latitude }}, lng: {{ emergency.longitude }} },
+                                                                    map: map,
+                                                                    icon: {
+                                                                        path: google.maps.SymbolPath.CIRCLE,
+                                                                        scale: 10,
+                                                                        fillColor: '#dc3545',
+                                                                        fillOpacity: 1,
+                                                                        strokeColor: '#ffffff',
+                                                                        strokeWeight: 2
+                                                                    }
+                                                                });
+                                                            }
+                                                            
+                                                            // Initialize map when modal is shown
+                                                            document.getElementById('viewModal{{ emergency.id }}').addEventListener('shown.bs.modal', function () {
+                                                                initMap{{ emergency.id }}();
+                                                            });
+                                                        </script>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                {% if emergency.status != 'resolved' %}
+                                                    <form method="POST" action="{{ url_for('update_emergency_status', emergency_id=emergency.id) }}">
+                                                        <input type="hidden" name="status" value="resolved">
+                                                        <button type="submit" class="btn btn-success">
+                                                            <i class="fas fa-check"></i> Mark as Resolved
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> You have no emergency history records.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Emergency Response Tips</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="emergency-details">
+                        <i class="fas fa-first-aid text-danger mb-2"></i>
+                        <h6>Stay Calm</h6>
+                        <p>Try to remain calm and assess the situation. Take deep breaths and focus on your next steps.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="emergency-details">
+                        <i class="fas fa-phone text-success mb-2"></i>
+                        <h6>Call for Help</h6>
+                        <p>Call emergency services (100 for Police, 101 for Ambulance) if you need immediate assistance.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="emergency-details">
+                        <i class="fas fa-shield-alt text-primary mb-2"></i>
+                        <h6>Find Safe Space</h6>
+                        <p>Move to a public, well-lit area or a nearby safety zone if possible.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Load Google Maps JavaScript API -->
+<script src="https://maps.googleapis.com/maps/api/js?key={{ config['GOOGLE_MAPS_API_KEY'] }}&libraries=geometry"></script>
+{% endblock %} 
