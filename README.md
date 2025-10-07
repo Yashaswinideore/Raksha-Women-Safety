@@ -1,7 +1,7 @@
 # RAKSHA - Women Safety Application
 
 <div align="center">
-  <img src="https://cdn-icons-png.flaticon.com/512/3900/3900296.png" alt="Raksha Logo" width="200">
+  <img src="[https://cdn-icons-png.flaticon.com/512/3900/3900296.png](https://www.google.com/url?sa=i&url=https%3A%2F%2Fpngtree.com%2Fso%2Fwomen-logo&psig=AOvVaw3wMKg7zr6MiJefsqOQuI3s&ust=1759947152191000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCNjAyprYkpADFQAAAAAdAAAAABAM)" alt="Raksha Logo" width="80">
   <br>
   <h3>Empowering Women Through Technology</h3>
   
